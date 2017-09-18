@@ -1,0 +1,7 @@
+<h2>Query Executed for employee ID: {{searchId}}</h2>
+{{#if employee}}
+    <p> <b>First Name: </b> {{employee.firstName}}   </p>
+    <p><b>Last Name:</b> {{employee.lastName}}</p>
+{{else}}
+    <h3>No Employees with ID {{searchId}} found!</h3>
+{{/if}}
