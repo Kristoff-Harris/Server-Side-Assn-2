@@ -1,3 +1,13 @@
+//---------------------------------------------------------------------------------
+// Author   : Chris Harris
+// Class    : BU CS 601
+// Assn     : 2
+// File     : Server.js for Part 2
+// Purpose  : This program is meant to be accessed by a web browser, or API client which requests employeeModule functions such
+//            as looking up against an employee data set, doing a search to interact with a predefined dataset
+//
+//---------------------------------------------------------------------------------
+
 const empMod = require('./employeeModule');
 const express = require('express');
 const app = express();
@@ -5,7 +15,7 @@ const app = express();
 // setup handlebars view engine
 const handlebars = require('express-handlebars');
 
-app.engine('handlebars', handlebars({defaultLayout: 'main_logo'}));
+app.engine('handlebars', handlebars({defaultLayout: 'layoutmain'}));
 
 // to parse request body
 const bodyParser = require("body-parser");
@@ -23,10 +33,7 @@ app.get('/', (req, res) => {
     res.render('home');
 });
 
-app.get('/about', (req, res) => {
-    res.render('about');
-});
-
+// Used to search for a specific user ID and retrieve user details (available in JSON, XML and HTML)
 app.get('/id/:id', (req, res) => {
     res.format({
         'application/json': () => {
@@ -39,7 +46,7 @@ app.get('/id/:id', (req, res) => {
                 '<employee id="' + parseInt(req.params.id) + '">' + '\n' +
                 '<firstName>' + requestedEmp.firstName + '</firstName>' + '\n' +
                 '<lastName>' + requestedEmp.lastName + '</lastName>' + '\n' +
-                '</employee>';
+                '</employee>\n';
             res.type('application/xml');
             res.send(idXml);
         },
@@ -52,6 +59,7 @@ app.get('/id/:id', (req, res) => {
     });
 });
 
+// Used to search for a given last name (available in JSON, XML and HTML)
 app.get('/lastName/:name', (req, res) => {
     res.format({
         'application/json': () => {
@@ -80,57 +88,25 @@ app.get('/lastName/:name', (req, res) => {
     });
 });
 
+// show the add employee form to the user
 app.get('/addEmployee', (req, res) => {
     res.render('newEmployee');
 });
 
+// Endpoint which is posted to upon new user form submit
 app.post('/addEmployee', (req, res) => {
-    console.log(req.body);
     empMod.addEmployee(req.body.fName, req.body.lName);
     res.redirect('/lastName/' + req.body.lName);
 
 });
 
-// module
-const courses = require('./ex08_courses');
-
-app.get('/api/courses', (req, res) => {
-    res.json(courses.getAllCourses())
-});
-
-// GET request to the homepage
-app.get('/', (req, res) => {
-    res.type('text/html');
-    let result = '<table border=1>';
-    let item = '';
-    for (let header in req.headers) {
-        item = '<tr><th>' + header + '</th>' +
-            '<td>' + req.headers[header] + '</td></tr>\n';
-        result += item;
-    }
-    result += '</table>'
-    res.send(result);
-});
-
+// Setting up a way to return 404 upon resource unknown
 app.use((req, res) => {
     res.type('text/html');
     res.status(404);
     res.send("<b>404 - Not Found</b>");
 });
 
-app.listen(3002, () => {
-    console.log('http://localhost:3002');
+app.listen(3000, () => {
+    console.log('http://localhost:3000');
 });
-
-/*
-curl -X GET "http://localhost:3000/api/courses"
-
-curl -X GET "http://localhost:3000/api/course/cs602"
-
-curl -X DELETE "http://localhost:3000/api/course/cs602"
-
-curl -X POST -H "Content-type: application/json" \
-    "http://localhost:3000/api/course" \
-    -d '{"cid":"cs520", "cname":"Info Structures"}'
-
-*/

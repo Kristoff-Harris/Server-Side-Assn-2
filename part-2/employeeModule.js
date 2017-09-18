@@ -9,7 +9,6 @@ var data = [
 
 module.exports = {
     lookupById: function(currId){
-        console.log("currId passed into empMod is == ", currId);
         // with the assumption every user will have a unique ID
         idsFound = _.findWhere(data, {id: currId});
         return(idsFound);
@@ -30,20 +29,6 @@ module.exports = {
         });
     },
 
-    // Using pluck to print out all ids for a given dataset
-    getIds: function(currDataSet){
-        console.log(_.pluck(currDataSet, 'id'));
-    },
-
-    // Using pluck to print out all first names for a given dataset
-    getFirstNames: function(currDataSet){
-        console.log(_.pluck(currDataSet, 'firstName'));
-    },
-
-    // Using pluck to print out all ids for a given dataset
-    getLastNames: function(currDataSet){
-        console.log(_.pluck(currDataSet, 'lastName'));
-    },
 
     // Adds a new employee to the data object
     addEmployee: function(fName, lName){
@@ -51,7 +36,6 @@ module.exports = {
         var currHighest = _.max(data, function(data){ return data.id; });
         var newId = currHighest.id + 1;
 
-        //var currList = JSON.parse(data);
         data.push({id: newId, firstName: fName, lastName: lName});
     }
 };
